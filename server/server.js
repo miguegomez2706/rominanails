@@ -13,6 +13,7 @@ import appointmentRoutes from './routes/appointmentRoutes.js';
 import galleryRoutes from './routes/galleryRoutes.js';
 import promotionRoutes from './routes/promotionRoutes.js';
 import businessRoutes from './routes/businessRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use('/api/appointments', appointmentRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/promotions', promotionRoutes);
 app.use('/api/business', businessRoutes);
+app.use('/api/uploadthing', uploadRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

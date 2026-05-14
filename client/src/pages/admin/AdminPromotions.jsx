@@ -3,6 +3,7 @@ import { promotionService } from '../../services';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Modal from '../../components/ui/Modal';
+import { UploadButton } from '../../utils/uploadthing';
 
 const emptyForm = { title: '', description: '', discount: '', originalPrice: '', promoPrice: '', image: null };
 
@@ -19,11 +20,9 @@ export default function AdminPromotions() {
 
   const handleSubmit = async () => {
     setSaving(true);
-    const fd = new FormData();
-    Object.entries(form).forEach(([k, v]) => { if (v !== null && v !== '') fd.append(k, v); });
     try {
-      if (editing) await promotionService.update(editing, fd);
-      else await promotionService.create(fd);
+      if (editing) await promotionService.update(editing, form);
+      else await promotionService.create(form);
       setModalOpen(false); setEditing(null); setForm(emptyForm); load();
     } catch (e) { alert(e.response?.data?.message || 'Error'); }
     finally { setSaving(false); }
@@ -103,7 +102,26 @@ export default function AdminPromotions() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-2">Imagen</label>
-            <input type="file" accept="image/*" onChange={e => setForm({ ...form, image: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-600 hover:file:bg-pink-100" />
+            {form.image ? (
+              <div className="relative inline-block">
+                <img src={form.image} alt="Preview" className="w-32 h-32 object-cover rounded-xl border border-gray-200" />
+                <button type="button" onClick={() => setForm({ ...form, image: null })} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">✕</button>
+              </div>
+            ) : (
+              <div className="border-2 border-dashed border-gray-200 rounded-xl p-4 flex justify-center">
+                <UploadButton
+                  endpoint="imageUploader"
+                  onClientUploadComplete={(res) => {
+                    if (res && res.length > 0) {
+                      setForm({ ...form, image: res[0].url });
+                    }
+                  }}
+                  onUploadError={(error) => {
+                    alert(`Error al subir imagen: ${error.message}`);
+                  }}
+                />
+              </div>
+            )}
           </div>
           <div className="flex gap-3 pt-4">
             <Button variant="ghost" onClick={() => setModalOpen(false)}>Cancelar</Button>

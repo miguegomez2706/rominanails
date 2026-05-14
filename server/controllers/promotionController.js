@@ -1,4 +1,19 @@
 import Promotion from '../models/Promotion.js';
+import { utapi } from '../utils/uploadthing.js';
+
+// Helper function to extract key and delete from UploadThing
+const deleteFromUploadThing = async (imageUrl) => {
+  if (imageUrl && imageUrl.includes('utfs.io/f/')) {
+    const fileKey = imageUrl.split('utfs.io/f/')[1];
+    if (fileKey) {
+      try {
+        await utapi.deleteFiles(fileKey);
+      } catch (error) {
+        console.error('Error deleting file from UploadThing:', error);
+      }
+    }
+  }
+};
 
 // GET /api/promotions
 export const getPromotions = async (req, res, next) => {
@@ -14,11 +29,7 @@ export const getPromotions = async (req, res, next) => {
 // POST /api/promotions
 export const createPromotion = async (req, res, next) => {
   try {
-    const promoData = { ...req.body };
-    if (req.file) {
-      promoData.image = `/uploads/${req.file.filename}`;
-    }
-    const promotion = await Promotion.create(promoData);
+    const promotion = await Promotion.create(req.body);
     res.status(201).json(promotion);
   } catch (error) {
     next(error);
@@ -28,15 +39,18 @@ export const createPromotion = async (req, res, next) => {
 // PUT /api/promotions/:id
 export const updatePromotion = async (req, res, next) => {
   try {
-    const promoData = { ...req.body };
-    if (req.file) {
-      promoData.image = `/uploads/${req.file.filename}`;
+    const existingPromotion = await Promotion.findById(req.params.id);
+    if (!existingPromotion) return res.status(404).json({ message: 'Promoción no encontrada' });
+
+    // Si la imagen ha cambiado, borrar la anterior de UploadThing
+    if (req.body.image && existingPromotion.image && req.body.image !== existingPromotion.image) {
+      await deleteFromUploadThing(existingPromotion.image);
     }
-    const promotion = await Promotion.findByIdAndUpdate(req.params.id, promoData, {
+
+    const promotion = await Promotion.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
-    if (!promotion) return res.status(404).json({ message: 'Promoción no encontrada' });
     res.json(promotion);
   } catch (error) {
     next(error);
@@ -48,6 +62,12 @@ export const deletePromotion = async (req, res, next) => {
   try {
     const promotion = await Promotion.findByIdAndDelete(req.params.id);
     if (!promotion) return res.status(404).json({ message: 'Promoción no encontrada' });
+
+    // Borrar imagen de UploadThing si existe
+    if (promotion.image) {
+      await deleteFromUploadThing(promotion.image);
+    }
+
     res.json({ message: 'Promoción eliminada correctamente' });
   } catch (error) {
     next(error);

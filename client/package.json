@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@uploadthing/react": "^7.3.3",
     "axios": "^1.16.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.38.0",
@@ -19,6 +20,7 @@
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.15.0",
     "swiper": "^12.1.4",
+    "uploadthing": "^7.7.4",
     "zustand": "^5.0.13"
   },
   "devDependencies": {

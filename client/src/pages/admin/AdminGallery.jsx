@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { galleryService } from '../../services';
 import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
+import { UploadButton } from '../../utils/uploadthing';
 
 export default function AdminGallery() {
   const [images, setImages] = useState([]);
@@ -12,15 +13,16 @@ export default function AdminGallery() {
   const load = () => { galleryService.getAll().then(res => setImages(res.data)).catch(() => {}).finally(() => setLoading(false)); };
   useEffect(load, []);
 
-  const handleUpload = async (e) => {
-    const files = e.target.files;
-    if (!files.length) return;
+  const handleUploadComplete = async (res) => {
+    if (!res || res.length === 0) return;
     setUploading(true);
-    for (const file of files) {
-      const fd = new FormData();
-      fd.append('image', file);
-      fd.append('title', file.name.replace(/\.[^/.]+$/, ''));
-      try { await galleryService.upload(fd); } catch (err) { console.error(err); }
+    for (const file of res) {
+      try { 
+        await galleryService.upload({
+          image: file.url,
+          title: file.name.replace(/\.[^/.]+$/, '')
+        }); 
+      } catch (err) { console.error(err); }
     }
     setUploading(false);
     load();
@@ -40,12 +42,15 @@ export default function AdminGallery() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-heading font-bold text-gray-900">Galería</h1>
-        <label className="cursor-pointer">
-          <input type="file" accept="image/*" multiple onChange={handleUpload} className="hidden" />
-          <span className="inline-flex items-center gap-2 px-6 py-3 bg-pink-400 hover:bg-pink-500 text-white font-semibold rounded-xl shadow-lg shadow-pink-400/30 transition-all">
-            {uploading ? 'Subiendo...' : '+ Subir imágenes'}
-          </span>
-        </label>
+        <div className="flex flex-col items-end">
+          <UploadButton
+            endpoint="imageUploader"
+            onClientUploadComplete={handleUploadComplete}
+            onUploadError={(error) => alert(`Error al subir imagen: ${error.message}`)}
+            className="ut-button:bg-pink-400 ut-button:hover:bg-pink-500 ut-button:ut-readying:bg-pink-400/50 ut-button:rounded-xl shadow-lg shadow-pink-400/30 transition-all font-semibold"
+          />
+          {uploading && <span className="text-sm text-pink-500 mt-2 font-medium">Procesando imágenes...</span>}
+        </div>
       </div>
       {loading ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

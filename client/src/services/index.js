@@ -8,8 +8,8 @@ export const authService = {
 export const servicesService = {
   getAll: (params) => api.get('/services', { params }),
   getById: (id) => api.get(`/services/${id}`),
-  create: (data) => api.post('/services', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  update: (id, data) => api.put(`/services/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  create: (data) => api.post('/services', data),
+  update: (id, data) => api.put(`/services/${id}`, data),
   delete: (id) => api.delete(`/services/${id}`),
 };
 
@@ -24,14 +24,14 @@ export const appointmentService = {
 
 export const galleryService = {
   getAll: (params) => api.get('/gallery', { params }),
-  upload: (data) => api.post('/gallery', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  upload: (data) => api.post('/gallery', data),
   delete: (id) => api.delete(`/gallery/${id}`),
 };
 
 export const promotionService = {
   getAll: () => api.get('/promotions'),
-  create: (data) => api.post('/promotions', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  update: (id, data) => api.put(`/promotions/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  create: (data) => api.post('/promotions', data),
+  update: (id, data) => api.put(`/promotions/${id}`, data),
   delete: (id) => api.delete(`/promotions/${id}`),
 };
 

@@ -4,6 +4,7 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Modal from '../../components/ui/Modal';
 import Badge from '../../components/ui/Badge';
+import { UploadButton } from '../../utils/uploadthing';
 
 const emptyForm = { title: '', description: '', category: 'Manicura', duration: '', price: '', image: null };
 const categories = ['Manicura', 'Pedicura', 'Nail Art', 'Tratamientos', 'Combos'];
@@ -22,11 +23,9 @@ export default function AdminServices() {
 
   const handleSubmit = async () => {
     setSaving(true);
-    const fd = new FormData();
-    Object.entries(form).forEach(([k, v]) => { if (v !== null) fd.append(k, v); });
     try {
-      if (editing) { await servicesService.update(editing, fd); }
-      else { await servicesService.create(fd); }
+      if (editing) { await servicesService.update(editing, form); }
+      else { await servicesService.create(form); }
       setModalOpen(false); setEditing(null); setForm(emptyForm); load();
     } catch (e) { alert(e.response?.data?.message || 'Error'); }
     finally { setSaving(false); }
@@ -88,7 +87,26 @@ export default function AdminServices() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-2">Imagen</label>
-            <input type="file" accept="image/*" onChange={e => setForm({ ...form, image: e.target.files[0] })} className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-600 hover:file:bg-pink-100" />
+            {form.image ? (
+              <div className="relative inline-block">
+                <img src={form.image} alt="Preview" className="w-32 h-32 object-cover rounded-xl border border-gray-200" />
+                <button type="button" onClick={() => setForm({ ...form, image: null })} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">✕</button>
+              </div>
+            ) : (
+              <div className="border-2 border-dashed border-gray-200 rounded-xl p-4 flex justify-center">
+                <UploadButton
+                  endpoint="imageUploader"
+                  onClientUploadComplete={(res) => {
+                    if (res && res.length > 0) {
+                      setForm({ ...form, image: res[0].url });
+                    }
+                  }}
+                  onUploadError={(error) => {
+                    alert(`Error al subir imagen: ${error.message}`);
+                  }}
+                />
+              </div>
+            )}
           </div>
           <div className="flex gap-3 pt-4">
             <Button variant="ghost" onClick={() => setModalOpen(false)}>Cancelar</Button>
