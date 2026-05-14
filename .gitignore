@@ -1,0 +1,68 @@
+# ========================
+# Dependencies
+# ========================
+node_modules/
+
+# ========================
+# Environment Variables
+# ========================
+.env
+.env.local
+.env.production
+.env.*.local
+
+# ========================
+# Build Output
+# ========================
+dist/
+dist-ssr/
+build/
+
+# ========================
+# Uploaded Files (runtime)
+# ========================
+server/uploads/*
+!server/uploads/.gitkeep
+
+# ========================
+# MongoDB Local
+# ========================
+mongodb/
+mongodb.zip
+
+# ========================
+# Logs
+# ========================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ========================
+# OS Files
+# ========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ========================
+# IDE / Editor
+# ========================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+*~
+
+# ========================
+# Misc
+# ========================
+.gemini/
+*.local
+.cache/
