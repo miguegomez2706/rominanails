@@ -64,5 +64,7 @@ Desktop.ini
 # Misc
 # ========================
 .gemini/
+.agents/
+scratch_*.js
 *.local
 .cache/

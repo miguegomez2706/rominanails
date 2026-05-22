@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import PageWrapper, { SectionHeader } from '../components/layout/PageWrapper';
-import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
-import { SkeletonCard } from '../components/ui/Skeleton';
 import { servicesService } from '../services';
 
 const categories = ['Todas', 'Manicura', 'Pedicura', 'Nail Art', 'Tratamientos', 'Combos'];

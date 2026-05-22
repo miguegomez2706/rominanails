@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import PageWrapper, { SectionHeader } from '../components/layout/PageWrapper';
-import { Clock, MapPin, CreditCard } from 'lucide-react';
+
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation, EffectFade } from 'swiper/modules';
 

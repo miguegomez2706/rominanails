@@ -39,3 +39,7 @@ export const businessService = {
   get: () => api.get('/business'),
   update: (data) => api.put('/business', data),
 };
+
+export const instagramService = {
+  getFeed: () => api.get('/instagram'),
+};

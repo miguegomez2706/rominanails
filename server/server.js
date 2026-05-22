@@ -14,6 +14,7 @@ import galleryRoutes from './routes/galleryRoutes.js';
 import promotionRoutes from './routes/promotionRoutes.js';
 import businessRoutes from './routes/businessRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import instagramRoutes from './routes/instagramRoutes.js';
 
 dotenv.config();
 
@@ -47,6 +48,7 @@ app.use('/api/gallery', galleryRoutes);
 app.use('/api/promotions', promotionRoutes);
 app.use('/api/business', businessRoutes);
 app.use('/api/uploadthing', uploadRoutes);
+app.use('/api/instagram', instagramRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
