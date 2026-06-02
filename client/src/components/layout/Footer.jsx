@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Phone, MapPin, Heart, ArrowUp } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { businessService } from '../../services';
 
 const footerLinks = [
   { name: 'Inicio', path: '/' },
@@ -18,6 +20,12 @@ const serviceLinks = [
 ];
 
 export default function Footer() {
+  const [businessInfo, setBusinessInfo] = useState(null);
+
+  useEffect(() => {
+    businessService.get().then(res => setBusinessInfo(res.data)).catch(console.error);
+  }, []);
+
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   return (
@@ -122,7 +130,7 @@ export default function Footer() {
                 </div>
                 <div className="text-sm">
                   <p className="font-bold text-white mb-1">Visitanos</p>
-                  <p className="text-gray-500">Dirección del Salón, Buenos Aires</p>
+                  <p className="text-gray-500">{businessInfo?.address || 'Necochea 307 OF 3, Resistencia'}</p>
                 </div>
               </li>
               <li className="flex items-start gap-4">
@@ -131,7 +139,7 @@ export default function Footer() {
                 </div>
                 <div className="text-sm">
                   <p className="font-bold text-white mb-1">WhatsApp</p>
-                  <p className="text-gray-500">+54 11 XXXX-XXXX</p>
+                  <p className="text-gray-500">{businessInfo?.phone || '+54 362 494-0856'}</p>
                 </div>
               </li>
             </ul>
