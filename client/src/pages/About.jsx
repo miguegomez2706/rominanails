@@ -18,6 +18,20 @@ export default function About() {
     businessService.get().then(res => setBusinessInfo(res.data)).catch(console.error);
   }, []);
 
+  // Convierte cualquier URL de Google Maps a formato embed
+  const getEmbedMapUrl = (url) => {
+    if (!url) return null;
+    // Si ya es una URL de embed, usarla directo
+    if (url.includes('/maps/embed')) return url;
+    // Si es un link normal de Google Maps, convertirlo a embed con la dirección
+    const address = businessInfo?.address || '';
+    if (address) {
+      return `https://www.google.com/maps/embed/v1/place?key=&q=${encodeURIComponent(address)}`;
+    }
+    // Fallback: usar la dirección del link como query en un iframe de búsqueda
+    return `https://maps.google.com/maps?q=${encodeURIComponent(address || url)}&output=embed`;
+  };
+
   return (
     <PageWrapper>
       <section className="py-24 bg-white">
@@ -145,7 +159,7 @@ export default function About() {
                   height="100%" 
                   frameBorder="0" 
                   style={{ border: 0 }}
-                  src={businessInfo?.mapUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3540.061730419357!2d-58.9882672!3d-27.4516709!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94450c5ab1e83dc5%3A0x6b8bc23307524efb!2sNecochea%20307%2C%20H3500%20Resistencia%2C%20Chaco!5e0!3m2!1ses-419!2sar!4v1715638400000!5m2!1ses-419!2sar"} 
+                  src={getEmbedMapUrl(businessInfo?.mapUrl) || `https://maps.google.com/maps?q=${encodeURIComponent(businessInfo?.address || 'Necochea 307 OF 3, Resistencia, Chaco')}&output=embed`} 
                   allowFullScreen="" 
                   loading="lazy" 
                   referrerPolicy="no-referrer-when-downgrade"
