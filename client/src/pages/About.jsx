@@ -18,18 +18,16 @@ export default function About() {
     businessService.get().then(res => setBusinessInfo(res.data)).catch(console.error);
   }, []);
 
-  // Convierte cualquier URL de Google Maps a formato embed
+  // Convierte cualquier URL de Google Maps a formato embed gratuito
   const getEmbedMapUrl = (url) => {
-    if (!url) return null;
-    // Si ya es una URL de embed, usarla directo
-    if (url.includes('/maps/embed')) return url;
-    // Si es un link normal de Google Maps, convertirlo a embed con la dirección
-    const address = businessInfo?.address || '';
+    // Si ya es una URL de embed válida (tipo pb=), usarla directo
+    if (url && url.includes('/maps/embed?pb=')) return url;
+    // Usar la dirección para generar un mapa gratuito sin API key
+    const address = businessInfo?.address;
     if (address) {
-      return `https://www.google.com/maps/embed/v1/place?key=&q=${encodeURIComponent(address)}`;
+      return `https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
     }
-    // Fallback: usar la dirección del link como query en un iframe de búsqueda
-    return `https://maps.google.com/maps?q=${encodeURIComponent(address || url)}&output=embed`;
+    return null;
   };
 
   return (
