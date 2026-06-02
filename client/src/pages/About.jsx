@@ -18,14 +18,30 @@ export default function About() {
     businessService.get().then(res => setBusinessInfo(res.data)).catch(console.error);
   }, []);
 
-  // Convierte cualquier URL de Google Maps a formato embed gratuito
+  // Convierte cualquier URL de Google Maps a formato embed gratuito o extrae src de un iframe
   const getEmbedMapUrl = (url) => {
-    // Si ya es una URL de embed válida (tipo pb=), usarla directo
-    if (url && url.includes('/maps/embed?pb=')) return url;
-    // Usar la dirección para generar un mapa gratuito sin API key
+    if (url) {
+      // 1. Si el usuario pegó el código <iframe> entero, extraemos el src
+      if (url.includes('<iframe') && url.includes('src="')) {
+        const match = url.match(/src="([^"]+)"/);
+        if (match) return match[1];
+      }
+      
+      // 2. Si ya es una URL de embed válida (tipo pb=), usarla directo
+      if (url.includes('/maps/embed')) return url;
+
+      // 3. Si es un link de Google Maps con coordenadas (ej: @-27.45,-58.98)
+      const coordsMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (coordsMatch) {
+        return `https://maps.google.com/maps?q=${coordsMatch[1]},${coordsMatch[2]}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+      }
+    }
+
+    // 4. Fallback: Usar la dirección, pero limpiando cosas que confunden a Google (como "OF 3")
     const address = businessInfo?.address;
     if (address) {
-      return `https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+      const cleanedAddress = address.replace(/(?:of|oficina)\s*\d+/i, '').trim().replace(/,\s*,/g, ',');
+      return `https://maps.google.com/maps?q=${encodeURIComponent(cleanedAddress)}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
     }
     return null;
   };
