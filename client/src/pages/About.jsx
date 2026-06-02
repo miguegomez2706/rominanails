@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
-import PageWrapper, { SectionHeader } from '../components/layout/PageWrapper';
+import PageWrapper from '../components/layout/PageWrapper';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination, Navigation, EffectFade } from 'swiper/modules';
+import { Autoplay, Pagination, EffectFade } from 'swiper/modules';
 
 import 'swiper/css';
 import 'swiper/css/pagination';

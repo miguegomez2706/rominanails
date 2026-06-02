@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, EffectFade } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { servicesService, promotionService, instagramService } from '../services';
 
@@ -64,11 +64,21 @@ export default function Home() {
   const [instagramFeed, setInstagramFeed] = useState([]);
   const [activeFaq, setActiveFaq] = useState(null);
 
+  const instagramRef = useRef(null);
+  const isInstagramInView = useInView(instagramRef, { once: true, margin: "200px" });
+  const hasFetchedInstagram = useRef(false);
+
   useEffect(() => {
     servicesService.getAll({ active: true }).then(res => setServices(res.data)).catch(() => {});
     promotionService.getAll().then(res => setPromotions(res.data)).catch(() => {});
-    instagramService.getFeed().then(res => setInstagramFeed(res.data)).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (isInstagramInView && !hasFetchedInstagram.current) {
+      hasFetchedInstagram.current = true;
+      instagramService.getFeed().then(res => setInstagramFeed(res.data)).catch(() => {});
+    }
+  }, [isInstagramInView]);
 
   const destacados = services.slice(0, 4);
   const masBuscados = services.slice(4, 12);
@@ -469,7 +479,7 @@ export default function Home() {
       </section>
 
       {/* 5. INSTAGRAM FEED */}
-      <section className="relative w-full bg-[#fdfbfb] py-32 overflow-hidden border-t border-gray-100">
+      <section ref={instagramRef} className="relative w-full bg-[#fdfbfb] py-32 overflow-hidden border-t border-gray-100">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-pink-100/30 rounded-full blur-[100px] pointer-events-none translate-x-1/3 -translate-y-1/3"></div>
           
           <div className="max-w-[1400px] mx-auto px-4 relative z-10">
@@ -479,14 +489,14 @@ export default function Home() {
               viewport={{ once: true }}
               className="flex flex-col items-center justify-center mb-16 text-center"
             >
-              <a href="https://www.instagram.com/estudio_romina_gomez/?hl=es" target="_blank" rel="noreferrer" className="group flex flex-col items-center">
+              <a href="https://www.instagram.com/romina_gomez_nails_art/" target="_blank" rel="noreferrer" className="group flex flex-col items-center">
                 <div className="w-20 h-20 bg-gradient-to-tr from-[#f09433] via-[#e6683c] to-[#bc1888] rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500 mb-6 p-[2px]">
                   <div className="w-full h-full bg-white rounded-full flex items-center justify-center border-2 border-transparent group-hover:bg-transparent transition-colors duration-500">
                     <svg className="w-8 h-8 text-[#bc1888] group-hover:text-white transition-colors duration-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                   </div>
                 </div>
                 <p className="text-pink-500 font-bold tracking-[0.2em] text-xs uppercase mb-2">Seguinos en Instagram</p>
-                <h2 className="text-4xl md:text-5xl font-body font-black text-gray-900 group-hover:text-[#bc1888] transition-colors">@estudio_romina_gomez</h2>
+                <h2 className="text-4xl md:text-5xl font-body font-black text-gray-900 group-hover:text-[#bc1888] transition-colors">@romina_gomez_nails_art</h2>
               </a>
             </motion.div>
             
@@ -501,7 +511,7 @@ export default function Home() {
                     key={post.id || i}
                   >
                     <a href={post.permalink} target="_blank" rel="noreferrer" className="block aspect-square overflow-hidden group relative rounded-[2rem] shadow-sm hover:shadow-[0_20px_40px_rgba(188,24,136,0.15)] transition-all duration-500">
-                      <img src={post.thumbnailUrl} alt="Instagram post" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
+                      <img src={post.thumbnailUrl} alt="Instagram post" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" loading="lazy" decoding="async" />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#bc1888]/80 via-[#bc1888]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col items-center justify-center gap-2">
                          <svg className="w-10 h-10 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                          <span className="text-white font-bold text-sm tracking-widest uppercase transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">Ver en IG</span>
@@ -519,13 +529,15 @@ export default function Home() {
                 ))
               ) : (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="aspect-square bg-gray-100 animate-pulse rounded-[2rem]"></div>
+                  <div key={i} className="aspect-square bg-gray-200/50 animate-pulse rounded-[2rem] border border-gray-100 shadow-sm flex items-center justify-center">
+                    <svg className="w-8 h-8 text-gray-300" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                  </div>
                 ))
               )}
             </div>
             
             <div className="mt-16 text-center">
-              <a href="https://www.instagram.com/estudio_romina_gomez/?hl=es" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-gray-200 text-gray-900 font-bold hover:border-[#bc1888] hover:text-[#bc1888] transition-colors uppercase tracking-[0.2em] text-[11px]">
+              <a href="https://www.instagram.com/romina_gomez_nails_art/" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-gray-200 text-gray-900 font-bold hover:border-[#bc1888] hover:text-[#bc1888] transition-colors uppercase tracking-[0.2em] text-[11px]">
                 Ver más publicaciones
               </a>
             </div>

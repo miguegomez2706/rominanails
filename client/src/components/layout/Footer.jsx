@@ -53,13 +53,13 @@ export default function Footer() {
           </p>
           <div className="flex gap-6">
             <a 
-              href="https://instagram.com" 
+              href="https://www.instagram.com/romina_gomez_nails_art/" 
               target="_blank" 
               rel="noreferrer"
               className="group flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-bold hover:bg-white hover:text-black transition-all duration-500"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-              <span>@estudio_romina_gomez</span>
+              <span>@romina_gomez_nails_art</span>
             </a>
             <button 
               onClick={scrollToTop}

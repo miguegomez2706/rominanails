@@ -27,7 +27,7 @@ export const getInstagramFeed = async (req, res, next) => {
         id: `mock_${i}`,
         mediaUrl: `https://picsum.photos/seed/${i + 10}/800/1000`, 
         thumbnailUrl: `https://picsum.photos/seed/${i + 10}/800/1000`,
-        permalink: 'https://www.instagram.com/estudio_romina_gomez/',
+        permalink: 'https://www.instagram.com/romina_gomez_nails_art/',
         mediaType: i % 3 === 0 ? 'VIDEO' : 'IMAGE'
       }));
       
@@ -53,7 +53,7 @@ export const getInstagramFeed = async (req, res, next) => {
       mediaUrl: post.mediaUrl || post.media_url || post.url,
       // Si es video, Behold.so suele mandar thumbnailUrl. Si no, usamos mediaUrl.
       thumbnailUrl: post.thumbnailUrl || post.thumbnail_url || post.mediaUrl || post.media_url || post.url,
-      permalink: post.permalink || 'https://www.instagram.com/estudio_romina_gomez/',
+      permalink: post.permalink || 'https://www.instagram.com/romina_gomez_nails_art/',
       mediaType: (post.mediaType || post.media_type || 'IMAGE').toUpperCase()
     })).filter(post => post.thumbnailUrl).slice(0, 6); // Tomamos solo los últimos 6 válidos
 
