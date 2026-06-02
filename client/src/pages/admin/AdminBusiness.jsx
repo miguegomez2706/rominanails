@@ -45,7 +45,6 @@ export default function AdminBusiness() {
           <Input label="Email" name="email" type="email" value={form.email} onChange={handle} />
         </div>
         <Input label="Sobre nosotros" name="about" type="textarea" value={form.about} onChange={handle} />
-        <Input label="URL Google Maps" name="mapUrl" value={form.mapUrl} onChange={handle} />
         <Button onClick={handleSave} loading={saving} className="w-full">Guardar cambios</Button>
       </div>
     </div>
